@@ -1,11 +1,13 @@
 from scales import *
 import matplotlib.pyplot as plt
+from pdb_to_seq import pdb2seq
+#from interface import detections
 
 SCALE = "Kyte_Doolittle_scale"
 scale = scales[SCALE]
 
 
-def calculate_score(seq):
+def calculate_score(seq, score):
     seq_score = []
     for aa in seq:
         seq_score.append(scale[aa])
@@ -42,26 +44,45 @@ def calculate_regions(seq_score):
     return r_transmb, r_surface
 
 
-def make_plot(seq):
-
-    seq_score = calculate_score(seq)
+def make_plot(seq, score, debut, fin):
+    seq_score = calculate_score(seq, score)
     r_transmb, r_surface = calculate_regions(seq_score)
-    seq_nb = [i for i in range(len(seq))]
+    seq_nb = [i for i in range(debut, fin)]
 
+    plt.figure().set_figwidth(20)
     plt.clf()
+
     plt.title("Profile d'hydrophobicite")
     plt.plot(seq_nb, seq_score)
     for region in r_transmb:
         plt.plot(seq_nb[region[0]: region[1]], seq_score[region[0]: region[1]], color = 'red')
     for region in r_surface:
         plt.plot(seq_nb[region[0]: region[1]], seq_score[region[0]: region[1]], color = 'green')
-    plt.show()
+    
+    #plt.xlim(debut, fin)
+    
+    if len(seq) <= 60:
+        ticks = [f'{aa}\n{nb}' for aa, nb in zip(seq, seq_nb) ]
+        plt.xticks(seq_nb, ticks)
 
-    print(r_transmb, r_surface)
+    #print(r_transmb, r_surface)
+    plt.show()
+    return plt
+
+def analyse(scale, sequ_path, debut, fin):
+    seq = pdb2seq(sequ_path)
+    if debut != '' and fin != '':
+        debut = int(debut)
+        fin = int(fin)
+        seq = seq[debut: fin]
+        plot = make_plot(seq, scale, debut, fin)
+    else:
+        plot = make_plot(seq, scale, 0, len(seq))
+    return plot
 
 if __name__ == '__main__':
     #seq = 'AQPKIVLIVLIVLIVLVLIVLIVLIVLAQPAQPAVLIVVLIVQQQPAQPALLLLQQQQP'
     seq = 'MDFCLLNEKSQIFVHAEPYAVSDYVNQYVGTHSIRLPKGGRPAGRLHHRIFGCLDLCRISYGGSVRVISPGLETCYHLQIILKGHCLWRGHGQEHYFAPGELLLLNPDDQADLTYSEDCEKFIVKLPSVVLDRACSDNNWHKPREGIRFAARHNLQQLDGFINLLGLVCDEAEHTKSMPRVQEHYAGIIASKLLEMLGSNVSREIFSKGNPSFERVVQFIEENLKRNISLERLAELAMMSPRSLYNLFEKHAGTTPKNYIRNRKLESIRACLNDPSANVRSITEIALDYGFLHLGRFAENYRSAFGELPSDTLRQCKKEVA'
-    make_plot(seq)
+    make_plot(seq[5: 10], None, 5, 10)
 
 
