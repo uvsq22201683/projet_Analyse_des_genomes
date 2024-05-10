@@ -53,7 +53,7 @@ def place_plot(x, y, path = 'plot.png'):
     # Create a photoimage object of the image in the path
     image = Image.open(path)
     imgtk = ImageTk.PhotoImage(image)
-    l = tk.Label(image=imgtk, text = 'Plot')
+    l = tk.Label(image=imgtk, text = 'Plot', width=800, height=420)
     l.image = imgtk
     l.place(relx = x, rely = y)
     
@@ -121,7 +121,7 @@ def change_scale_visibility():
 
 def get_res():
     analyse(path.get(), debut.get(), fin.get(), param, echelles)
-    place_plot(0.02, 0.4)
+    place_plot(0.02, 0.25)
 
 
 def main():
@@ -150,7 +150,7 @@ def main():
     param = detections.copy()
     param_frames = {}
 
-    couleur = 'white'
+    couleur = '#EFFAF9'
     text_couleur = 'black'
 
     root.title('Analyse de genome')
@@ -160,24 +160,28 @@ def main():
     root.configure(bg = couleur)
     root.resizable(False,False)
 
-    titre = tk.Label(root, text= 'Logiciel de ??? des regions hydrophobes', font=("Courier New", 15),  
+    titre = tk.Label(root, text= 'Logiciel de reconaissance des regions hydrophobes', font=("Courier New", 20, ), 
                      justify='center', background = couleur, fg = text_couleur)
     titre.pack()
 
-    path_frame = create_frame('Fichier a analyser', 0.02, 0.1)
+    path_frame = create_frame('Fichier  à analyser', 0.02, 0.07)
     set_path_f(path_frame)
 
-    fenetre_frame = create_frame('Zoom', 0.02, 0.2)
+    fenetre_frame = create_frame('Zoom', 0.4, 0.07)
     set_fenetre_f(fenetre_frame)
 
-    echelle_frame = create_frame('Echelles', 0.4, 0.1)
+    echelle_frame = create_frame('Echelles',0.67, 0.07)
     set_echelle_f(echelle_frame)
 
-    param_frame = create_frame('Parametres a determiner', 0.7, 0.1)
+
+    param_frame = create_frame('Parametres à determiner', 0.67, 0.23)
     set_param_f(param_frame)
     
     analyser_b = tk.Button(text='valider', command= get_res)
-    analyser_b.place(relx=0.02, rely=0.35)
+    analyser_b.place(relx=0.15, rely=0.17)
+
+    regions = create_frame('Regions hydrophobes', 0.02, 0.8)
+
     
    
     root.mainloop()
