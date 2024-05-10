@@ -1,6 +1,6 @@
 scales = {
 
-"Kyte_Doolittle_scale" : {
+"Kyte_Doolittle_scale" : [{
     'A': 1.8,
     'C': 2.5,
     'D': -3.5,
@@ -21,6 +21,52 @@ scales = {
     'V' : 4.2,
     'W' : -0.9,
     'Y' : -1.3,
-}
+}, ['region_transmembranaire', 'region_de_surface'], 1 ],
+
+"Hopp_Woods_scale" : [{ #change to Welling scale + Kolaskar-Tongaonkar
+    'A': -0.5,
+    'C': -1,
+    'D': 3,
+    'E': 3,
+    'F': 4.4,
+    'G': 0,
+    'H' : -0.5,
+    'I' : -1.8,
+    'K': 3,
+    'L': -1.8,
+    'M': -1.3,
+    'N': 0.2,
+    'P' : 0,
+    "Q" : 0.2,
+    'R' : 3,
+    "S" : 0.3,
+    'T' : -0.4,
+    'V' : -0.5,
+    'W' : -3.4,
+    'Y' : -2.3,
+}, ['region_antigenic'], 0],
+
+"Cornette_scale": [{ 
+    'A': 0.2,
+    'C': 4.1,
+    'D': -3.1,
+    'E': -1.8,
+    'F': 1.19,
+    'G': 0.48,
+    'H' : -0.4,
+    'I' : 1.38,
+    'K': -1.5,
+    'L': 1.06,
+    'M': 0.64,
+    'N': -0.78,
+    'P' : 0.12,
+    "Q" : -0.85,
+    'R' : -2.53,
+    "S" : -0.18,
+    'T' : -0.05,
+    'V' : 1.08,
+    'W' : 0.81,
+    'Y' : 0.26,
+}, ['region_alpha_helice'], 0],
 }
 
