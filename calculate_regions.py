@@ -38,12 +38,11 @@ def calculate_regions(score, param, fun, value):
         if etat == 0:
             debut = i
             etat = 1
-            print('D', debut)
         if etat == 1:
             dist = abs(i-debut)+1
             if dist < int(param[2].get()):
                 if mistakes/dist <= float(param[3].get()):
-                    if not fun(score[i]):
+                    if not fun(score[i], value):
                             mistakes += 1
                 else: 
                         etat = 2
@@ -52,19 +51,17 @@ def calculate_regions(score, param, fun, value):
         
         if etat == 2:
             fin = i
-            dist = abs(fin-debut)
+            dist = abs(fin-debut)-1
             if dist >= int(param[1].get()) and dist <= int(param[2].get()):
                 region.append((debut, fin))
-                print('F', fin)
                 i -= 1
             else:
-                print(dist, int(param[1].get()),int(param[2].get()) )
                 i = debut
             etat = 0
             mistakes = 0
         i += 1
 
-    dist = abs(fin-debut-1)    
+    dist = abs(fin-debut)-1
     if dist > int(param[1].get()) and dist < int(param[2].get())\
           and etat != 0 and mistakes <= dist*float(param[3].get()):
         region.append((debut, fin))
