@@ -44,9 +44,32 @@ scales = {
     'V' : -0.5,
     'W' : -3.4,
     'Y' : -2.3,
-}, ['region_antigenic'], 0],
+}, ['region_antigenic_Hoop'], 0],
 
-"Cornette_scale": [{ 
+"Kolaskar_Tongaonkar_scale" : [{ #change to Welling scale + Kolaskar-Tongaonkar
+    'A': 1.064,
+    'C': 1.412,
+    'D': 0.866,
+    'E': 0.854,
+    'F': 1.091,
+    'G': 0.874,
+    'H' : 1.105,
+    'I' : 1.152,
+    'K': 0.930,
+    'L': 1.250,
+    'M': 0.826,
+    'N': 0.776,
+    'P' : 1.064,
+    "Q" : 1.015,
+    'R' : 0.873,
+    "S" : 1.012,
+    'T' : 0.909,
+    'V' : 1.383,
+    'W' : 0.893,
+    'Y' : 1.161,
+}, ['region_antigenic_Kolaskar'], 1]}#,
+
+""""Cornette_scale": [{ 
     'A': 0.2,
     'C': 4.1,
     'D': -3.1,
@@ -67,6 +90,6 @@ scales = {
     'V' : 1.08,
     'W' : 0.81,
     'Y' : 0.26,
-}, ['region_alpha_helice'], 0],
-}
+}, []]
+}"""
 
