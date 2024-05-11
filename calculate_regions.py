@@ -66,7 +66,7 @@ def calculate_regions(score, param, fun, value):
           and etat != 0 and mistakes <= dist*float(param[3].get()):
         region.append((debut, fin))
 
-    print(region)
+    print('AAAAAAaaaa', region)
     return region
 
 def plot_region(scale_name, region_name, fun, seq_scores, params, seq_nb):

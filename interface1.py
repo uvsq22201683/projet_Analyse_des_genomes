@@ -5,10 +5,13 @@ from scales import scales
 from PIL import Image, ImageTk
 
 ### Frame creation
-def create_frame(texte, x, y):
-    frame = tk.LabelFrame(root, background= couleur, text= texte,
-                               padx = 10, pady = 10)
+def create_frame(texte, x, y, w, h=0.1, py = 10):
+    frame = tk.LabelFrame(root, background= couleur, text= texte, font=("Robot", 12),
+                               width=largeur_ecran*w, height=hauteur_ecran*h, padx= 10, pady=py)
     frame.place(relx = x, rely = y)
+    frame.grid_propagate(False)
+    frame.pack_propagate(False)
+    #frame.grid_columnconfigure(1, weight=3)
     return frame
 
 def create_sous_frame(s_param, param_name):
@@ -25,7 +28,7 @@ def create_sous_frame(s_param, param_name):
     s_param[0] = val
     r = tk.Checkbutton(s_frame, text= param_name, bg = couleur,
                        variable= s_param[0], onvalue = True, offvalue = False,
-                       command= change_param_visibility)
+                       command= change_param_visibility, font=("Robot", 9))
     r.pack()
     ss_frame = tk.Frame(s_frame, background= couleur,
                                padx = 10, pady = 10)
@@ -41,26 +44,30 @@ def create_sous_frame(s_param, param_name):
     param_frames[param_name] = [s_frame, ss_frame]
     print(param_frames, param_name)
 
-def frame_row(frame, texte, var, var_value, row_nb):
-    l = tk.Label(frame, text= texte+'  ', font=("Courier New", 10),  
+def frame_row(frame, texte, var, var_value, row_nb, w = 20):
+    l = tk.Label(frame, text= texte+'  ', font=("Robot", 10),  
                      justify='left', background = couleur, fg = text_couleur)
-    l.grid(row = row_nb, column = 0)
+    l.grid(row = row_nb, column = 0, sticky='w')
+    #l.pack( side = 'left')
     var.set(var_value)
-    entry = tk.Entry(frame, textvariable= var)
+    entry = tk.Entry(frame, textvariable= var, width=w)
     entry.grid(row = row_nb, column = 1)
+    #entry.pack( side = 'left', expand= True,  fill='both')
+    
 
 def place_plot(x, y, path = 'plot.png'):
     # Create a photoimage object of the image in the path
     image = Image.open(path)
     imgtk = ImageTk.PhotoImage(image)
-    l = tk.Label(image=imgtk, text = 'Plot', width=800, height=420)
+    l = tk.Label(image=imgtk, text = 'Plot', width=largeur_ecran*0.6, 
+                 height=hauteur_ecran*0.53)
     l.image = imgtk
     l.place(relx = x, rely = y)
     
 
 ### set frames
 def set_path_f(path_frame):
-    frame_row(path_frame, 'Chemin du fichier a analyser:', path, '', 0)
+    frame_row(path_frame, 'Chemin du fichier a analyser:', path, '', 0, 60)
 
 def set_fenetre_f(fenetre_frame):
     frame_row(fenetre_frame, 'Debut:', debut, '', 0)
@@ -68,7 +75,6 @@ def set_fenetre_f(fenetre_frame):
 
 def set_echelle_f(frame):
     scales_name = list(scales.keys())
-    print(scales_name)
 
     for i in scales_name:
         val = tk.Variable(frame)
@@ -80,7 +86,7 @@ def set_echelle_f(frame):
     for s in scales_name:
         r = tk.Checkbutton(frame, text= s, bg = couleur,
                        variable= echelles[s], onvalue = True, offvalue = False, 
-                       command= change_scale_visibility)
+                       command= change_scale_visibility, font=("Robot", 9))
         r.pack()
 
 def set_param_f(frame):
@@ -121,7 +127,8 @@ def change_scale_visibility():
 
 def get_res():
     analyse(path.get(), debut.get(), fin.get(), param, echelles)
-    place_plot(0.02, 0.25)
+    place_plot(0.02, 0.27)
+    regions_f = create_frame('Regions localisées', 0.02, 0.8, 0.6, 0.15)
 
 
 def main():
@@ -160,29 +167,28 @@ def main():
     root.configure(bg = couleur)
     root.resizable(False,False)
 
-    titre = tk.Label(root, text= 'Logiciel de reconaissance des regions hydrophobes', font=("Courier New", 20, ), 
+    titre = tk.Label(root, text= 'Logiciel de reconaissance des regions hydrophobes', font=("Robot", 20), 
                      justify='center', background = couleur, fg = text_couleur)
+    #titre.grid(row = 0, column= 1, columnspan= 2)
     titre.pack()
 
-    path_frame = create_frame('Fichier  à analyser', 0.02, 0.07)
+    path_frame = create_frame('Fichier  à analyser', 0.02, 0.07, 0.45, py = 20)
     set_path_f(path_frame)
 
-    fenetre_frame = create_frame('Zoom', 0.4, 0.07)
+    fenetre_frame = create_frame('Zoom', 0.5, 0.07, 0.15)
     set_fenetre_f(fenetre_frame)
 
-    echelle_frame = create_frame('Echelles',0.67, 0.07)
+    echelle_frame = create_frame('Echelles',0.67, 0.07, 0.3, 0.25)
     set_echelle_f(echelle_frame)
 
 
-    param_frame = create_frame('Parametres à determiner', 0.67, 0.23)
+    param_frame = create_frame('Parametres à determiner', 0.67, 0.21, 0.3, 0.7)
     set_param_f(param_frame)
     
-    analyser_b = tk.Button(text='valider', command= get_res)
-    analyser_b.place(relx=0.15, rely=0.17)
+    analyser_b = tk.Button(text='valider', font=("Robot", 12), width= 20, height= 2,
+                           command= get_res)
+    analyser_b.place(relx=0.35, rely=0.18)
 
-    regions = create_frame('Regions hydrophobes', 0.02, 0.8)
-
-    
    
     root.mainloop()
 
