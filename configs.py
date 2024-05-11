@@ -15,8 +15,8 @@ colors = {
     'region_antigenique_Kolaskar': 'darkgreen',
 
     'Kyte_Doolittle_scale': 'blue',
-    'Eisenberg_scale': 'dodgerblue',
-    'Engelman_scale': 'deepskyblue',
+    'Eisenberg_scale': 'deepskyblue',
+    'Engelman_scale': 'dodgerblue',
 
     'Hopp_Woods_scale': 'purple',
     'Kolaskar_Tongaonkar_scale': 'orchid',

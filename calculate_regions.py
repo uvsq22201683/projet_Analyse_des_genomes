@@ -29,6 +29,44 @@ def score_less(score):
         return True
     return False
 
+def transmembrane_region(score, param):
+    """Cherche des regions transmembranaires"""
+    region = []
+
+    #param[1] = taille minimale de la region
+    #param[2] = taille maximale de la region
+    #param[3] = taux de tolerance de mistakes
+
+    etat = 0 #flag
+    debut = 0 #debut de la region
+    seuil = 1.6*(1-float(param[3].get()))
+    minsize = int(param[1].get())
+
+    i = 0
+    while i < len(score)-minsize:
+        if etat == 0: 
+            debut = i #selection du aa de debut
+            somme = sum(score[i:i+minsize])
+            if somme/minsize >= seuil: #si la moyenne supperieure au seuil
+                i += minsize-1 
+                etat = 1 #la region est transmembranaire
+                continue
+        if etat == 1:
+            dist = abs(i-debut)+1 #longeur de la region
+            somme += score[i]
+            moyenne = somme/dist
+            #tant que la taille de la region reste inferieur a la taille maximale
+            # et tant que la moyenne est supperieur au seuil
+            #la region est aggrandie
+            #sinon elle est sauvegardee
+            if  not (moyenne >= seuil and dist <= int(param[2].get()) and i<len(score)) :
+                    region.append((debut, i))
+                    i -= 1
+                    etat = 0
+        i += 1
+
+    return region
+
 
 def calculate_regions(score, param, fun):
     """Cherche des regions selectionnes"""
@@ -88,11 +126,13 @@ def calculate_regions(score, param, fun):
 
 
 
-def plot_region(scale_name, region_name, fun, seq_scores, params, seq_nb, legende):
+def plot_region(scale_name, region_name, fun, seq_scores, params, seq_nb):
     """Dessiner les regions identifiee sur le graphe"""
     seq_score = seq_scores[scale_name]
-    region = calculate_regions(seq_score, params[region_name], 
-                                   fun)
+    if region_name == 'region_transmembranaire':
+        region = transmembrane_region(seq_score, params[region_name])
+    else:
+        region = calculate_regions(seq_score, params[region_name],fun)
     i = 0
     for r in region:
         if fun == score_more:
@@ -106,15 +146,13 @@ def plot_region(scale_name, region_name, fun, seq_scores, params, seq_nb, legend
         else:
             plt.plot(seq_nb[r[0]: fin], seq_score[r[0]: fin], 
                      color = colors[region_name])
-        #legende.append(region_name)
-    return region, legende
+    return region
 
 
 def make_plot(seq, debut, fin, params, echelles):
     """Faire le graphe"""
     seq_scores = calculate_score(seq, echelles) #calculer les echelles selectionnees
     seq_nb = [i for i in range(debut, fin)]
-    legende = []
 
     plt.figure().set_figwidth(10)
     plt.clf()
@@ -123,7 +161,6 @@ def make_plot(seq, debut, fin, params, echelles):
     plt.title("Profile d'hydrophobicite")
     for key, item in seq_scores.items():
         plt.plot(seq_nb, item, color = colors[key], label = key)
-        #legende.append(key)
     
     #Identification des regions selectionnees
     params_keys = []
@@ -135,17 +172,17 @@ def make_plot(seq, debut, fin, params, echelles):
     regions = {}
     #Trace des regions trouvees sur le plot
     if 'region_transmembranaire' in params_keys:
-        regions['region_transmembranaire'], legende = plot_region('Kyte_Doolittle_scale', 'region_transmembranaire', 
-                                                         score_more, seq_scores, params, seq_nb, legende)
+        regions['region_transmembranaire'] = plot_region('Kyte_Doolittle_scale', 'region_transmembranaire', 
+                                                         score_more, seq_scores, params, seq_nb)
     if 'region_de_surface' in params_keys:
-        regions['region_de_surface'], legende = plot_region('Kyte_Doolittle_scale', 'region_de_surface', 
-                    score_less, seq_scores, params, seq_nb, legende)
+        regions['region_de_surface'] = plot_region('Kyte_Doolittle_scale', 'region_de_surface', 
+                    score_less, seq_scores, params, seq_nb)
     if 'region_antigenique_Hoop' in params_keys:
-        regions['region_antigenique_Hoop'], legende = plot_region('Hopp_Woods_scale', 'region_antigenique_Hoop', 
-                    score_less, seq_scores, params, seq_nb, legende)
+        regions['region_antigenique_Hoop'] = plot_region('Hopp_Woods_scale', 'region_antigenique_Hoop', 
+                    score_less, seq_scores, params, seq_nb)
     if 'region_antigenique_Kolaskar' in params_keys:
-        regions['region_antigenique_Kolaskar'], legende = plot_region('Kolaskar_Tongaonkar_scale', 'region_antigenique_Kolaskar', 
-                    score_more, seq_scores, params, seq_nb, legende)
+        regions['region_antigenique_Kolaskar']= plot_region('Kolaskar_Tongaonkar_scale', 'region_antigenique_Kolaskar', 
+                    score_more, seq_scores, params, seq_nb)
 
     #Ajout du nom des aa a l'axe x si la longeur de la sequence <= 60 aa
     if len(seq) <= 60:

@@ -7,7 +7,7 @@ aa3to1={
 }
 
 def pdb2seq(path):
-    """Extraction de la sequence proteiaue du fichier .pdb"""
+    """Extraction de la sequence proteique du fichier .pdb"""
     seq = ""
 
     f =  open(path,'r')
