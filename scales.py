@@ -1,5 +1,7 @@
-scales = {
+"""Valeurs de differentes echelles"""
 
+scales = {
+#nom d'echelle: [valeurs de l'echelle, regions a la detection desquelles cette echelle est adaptee, valeur "neutre" de l'echelle]
 "Kyte_Doolittle_scale" : [{
     'A': 1.8,
     'C': 2.5,
@@ -21,9 +23,9 @@ scales = {
     'V' : 4.2,
     'W' : -0.9,
     'Y' : -1.3,
-}, ['region_transmembranaire', 'region_de_surface'], 1 ],
+}, ['region_transmembranaire', 'region_de_surface'], 0],
 
-"Hopp_Woods_scale" : [{ #change to Welling scale + Kolaskar-Tongaonkar
+"Hopp_Woods_scale" : [{ 
     'A': -0.5,
     'C': -1,
     'D': 3,
@@ -44,9 +46,9 @@ scales = {
     'V' : -0.5,
     'W' : -3.4,
     'Y' : -2.3,
-}, ['region_antigenic_Hoop'], 0],
+}, ['region_antigenique_Hoop'], 0],
 
-"Kolaskar_Tongaonkar_scale" : [{ #change to Welling scale + Kolaskar-Tongaonkar
+"Kolaskar_Tongaonkar_scale" : [{
     'A': 1.064,
     'C': 1.412,
     'D': 0.866,
@@ -67,13 +69,13 @@ scales = {
     'V' : 1.383,
     'W' : 0.893,
     'Y' : 1.161,
-}, ['region_antigenic_Kolaskar'], 1]}#,
+}, ['region_antigenique_Kolaskar'], 1],
 
-""""Cornette_scale": [{ 
-    'A': 0.2,
-    'C': 4.1,
-    'D': -3.1,
-    'E': -1.8,
+"Eisenberg_scale" : [{
+    'A': 0.62,
+    'C': 0.29,
+    'D': -0.9,
+    'E': -0.74,
     'F': 1.19,
     'G': 0.48,
     'H' : -0.4,
@@ -86,10 +88,32 @@ scales = {
     "Q" : -0.85,
     'R' : -2.53,
     "S" : -0.18,
-    'T' : -0.05,
+    'T' : 0.05,
     'V' : 1.08,
     'W' : 0.81,
     'Y' : 0.26,
-}, []]
-}"""
+}, [], 0], 
+
+"Engelman_scale" : [{
+    'A': 1.6,
+    'C': 2,
+    'D': -9.2,
+    'E': -8.2,
+    'F': 3.7,
+    'G': 1,
+    'H' : -3,
+    'I' : 3.1,
+    'K': -8.8,
+    'L': 2.8,
+    'M': 3.4,
+    'N': -4.8,
+    'P' : -0.2,
+    "Q" : -4.1,
+    'R' : -12.3,
+    "S" : 0.6,
+    'T' : 1.2,
+    'V' : 2.6,
+    'W' : 1.9,
+    'Y' : -0.7,
+}, [], 0]}
 

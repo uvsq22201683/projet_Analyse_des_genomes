@@ -1,25 +1,25 @@
-colors = {
-    'region_transmembranaire': 'red',
-    'region_de_surface': 'green',
-    'region_antigenic_Hoop': 'indigo',
-    'region_antigenic_Kolaskar': 'yellow',
+"""Valeurs de config"""
 
-    'Kyte_Doolittle_scale': 'skyblue',
-    'Hopp_Woods_scale': 'wheat',
-    'Cornette_scale': 'mistyrose',
-    'Kolaskar_Tongaonkar_scale': 'plum',
-
-
-    '0_Kyte': 'blue',
-    '0_Hopp': 'goldenrod',
-    '0_Cornette': 'firebrick',
-    '0_Kolaskar': 'purple',
-
-}
-
-#detect, min, max, tolerance
-detections = {'region_transmembranaire': [False, 18, 22, 0], #if the values calculated are above 1.6
+#info sur des regions a detecter
+#detecter la region?, minsize, maxsize, taux de tolerance
+detections = {'region_transmembranaire': [False, 19, 22, 0],
               'region_de_surface': [False, 5, 8, 0],
-              'region_antigenic_Hoop': [False, 2, 10, 0],
-              'region_antigenic_Kolaskar': [False, 6, 20, 0]}
-              #'region_alpha_helice': [False, 5, 8, 0]} 
+              'region_antigenique_Hoop': [False, 3, 10, 0],
+              'region_antigenique_Kolaskar': [False, 6, 20, 0]} 
+
+#couleurs sur le plot
+colors = {
+    'region_transmembranaire': 'greenyellow',
+    'region_de_surface': 'green',
+    'region_antigenique_Hoop': 'palegreen',
+    'region_antigenique_Kolaskar': 'darkgreen',
+
+    'Kyte_Doolittle_scale': 'blue',
+    'Eisenberg_scale': 'dodgerblue',
+    'Engelman_scale': 'deepskyblue',
+
+    'Hopp_Woods_scale': 'purple',
+    'Kolaskar_Tongaonkar_scale': 'orchid',
+
+    'zero': 'red'
+}

@@ -3,46 +3,60 @@ import matplotlib.pyplot as plt
 from pdb_to_seq import pdb2seq
 from configs import colors
 
+"""Analyse de la sequence"""
 
 def calculate_score(seq, echelle):
+    """Calcule le score suivant l'echelle selectionnee
+    pour chaque AA de la sequence"""
     seq_scores = {}
     for s in list(echelle.keys()):
         if echelle[s].get():
             seq_scores[s] = []
             for aa in seq:
-                seq_scores[s].append(scales[s][0][aa])
+                #scales[s][0][aa] = score de l'aa donne
+                #scales[s][2] = score "neutre" de l'echelle
+                #scales[s][0][aa]-scales[s][2] = score normaliser pour que score neutre = 0
+                seq_scores[s].append(scales[s][0][aa]-scales[s][2])
     return seq_scores
 
-def score_more(score, value):
-    if score >= value:
+def score_more(score):
+    if score >= 0:
         return True
     return False
 
-def score_less(score, value):
-    if score <= value:
+def score_less(score):
+    if score <= 0:
         return True
     return False
 
 
-def calculate_regions(score, param, fun, value):
-
+def calculate_regions(score, param, fun):
+    """Cherche des regions selectionnes"""
     region = []
 
-    etat = 0
-    debut = 0
-    fin = 0
-    mistakes = 0
+    #param[1] = taille minimale de la region
+    #param[2] = taille maximale de la region
+    #param[3] = taux de tolerance de mistakes
+
+    etat = 0 #flag
+    debut = 0 #debut de la region
+    fin = 0 #fin de la region
+    mistakes = 0 #aa aui ne respectent pas les contraintes de la region
 
     i = 0
     while i < len(score):
-        if etat == 0:
-            debut = i
+        if etat == 0: 
+            debut = i #selection du aa de debut
             etat = 1
         if etat == 1:
-            dist = abs(i-debut)+1
-            if dist < int(param[2].get()):
-                if mistakes/dist <= float(param[3].get()):
-                    if not fun(score[i], value):
+            dist = abs(i-debut)+1 #longeur de la region
+            #tant que le regions est moins longue aue la valeur maximal
+            if dist < int(param[2].get()): 
+                #tant que le nombre de mistakes est moins grand que la valeur de mistaques maximale
+                if mistakes/dist <= float(param[3].get()): 
+                    #ajouter l'aa dans le region. 
+                    #Si aa ne correspond pas a la region incrementer mistakes
+                    if not fun(score[i]):
                             mistakes += 1
                 else: 
                         etat = 2
@@ -52,10 +66,14 @@ def calculate_regions(score, param, fun, value):
         if etat == 2:
             fin = i
             dist = abs(fin-debut)-1
+            #si la region correspond aux contraintes choisit par l'utilisateur
             if dist >= int(param[1].get()) and dist <= int(param[2].get()):
+                #ajouter la region
                 region.append((debut, fin))
+                # et recommencer la recherche d'autres regions sur le reste de la sequence 
                 i -= 1
             else:
+                #sinon, recommencer le recherche a aa qui suit le aa de debut
                 i = debut
             etat = 0
             mistakes = 0
@@ -66,62 +84,97 @@ def calculate_regions(score, param, fun, value):
           and etat != 0 and mistakes <= dist*float(param[3].get()):
         region.append((debut, fin))
 
-    print('AAAAAAaaaa', region)
     return region
 
-def plot_region(scale_name, region_name, fun, seq_scores, params, seq_nb):
+
+
+def plot_region(scale_name, region_name, fun, seq_scores, params, seq_nb, legende):
+    """Dessiner les regions identifiee sur le graphe"""
     seq_score = seq_scores[scale_name]
     region = calculate_regions(seq_score, params[region_name], 
-                                   fun, scales[scale_name][2])
+                                   fun)
+    i = 0
     for r in region:
         if fun == score_more:
-            plt.plot(seq_nb[r[0]: r[1]], seq_score[r[0]: r[1]], color = colors[region_name])
+            fin = r[1]
         else:
-            plt.plot(seq_nb[r[0]: r[1]-1], seq_score[r[0]: r[1]-1], color = colors[region_name])
+            fin = r[1]-1
+        if i == 0:
+            plt.plot(seq_nb[r[0]: fin], seq_score[r[0]: fin], 
+                     color = colors[region_name], label = region_name)
+            i = 1  
+        else:
+            plt.plot(seq_nb[r[0]: fin], seq_score[r[0]: fin], 
+                     color = colors[region_name])
+        #legende.append(region_name)
+    return region, legende
 
 
 def make_plot(seq, debut, fin, params, echelles):
-    seq_scores = calculate_score(seq, echelles)
+    """Faire le graphe"""
+    seq_scores = calculate_score(seq, echelles) #calculer les echelles selectionnees
     seq_nb = [i for i in range(debut, fin)]
+    legende = []
 
     plt.figure().set_figwidth(10)
     plt.clf()
 
+    #Trace des scores de la sequence
     plt.title("Profile d'hydrophobicite")
     for key, item in seq_scores.items():
-        plt.plot(seq_nb, item, color = colors[key])
+        plt.plot(seq_nb, item, color = colors[key], label = key)
+        #legende.append(key)
     
+    #Identification des regions selectionnees
     params_keys = []
     for k in list(params.keys()):
         if params[k][0].get():
             params_keys.append(k)
-    if 'region_transmembranaire' in params_keys:
-        plot_region('Kyte_Doolittle_scale', 'region_transmembranaire', score_more, seq_scores, params, seq_nb)
-    if 'region_de_surface' in params_keys:
-        plot_region('Kyte_Doolittle_scale', 'region_de_surface', score_less, seq_scores, params, seq_nb)
-    if 'region_antigenic_Hoop' in params_keys:
-        plot_region('Hopp_Woods_scale', 'region_antigenic_Hoop', score_less, seq_scores, params, seq_nb)
-    if 'region_antigenic_Kolaskar' in params_keys:
-        plot_region('Kolaskar_Tongaonkar_scale', 'region_antigenic_Kolaskar', score_more, seq_scores, params, seq_nb)
+    
 
-    
-    #plt.plot(regions[region][1][i], regions[region][2][i], color = colors[region])
-    
-    #plt.xlim(debut, fin)
-    
+    regions = {}
+    #Trace des regions trouvees sur le plot
+    if 'region_transmembranaire' in params_keys:
+        regions['region_transmembranaire'], legende = plot_region('Kyte_Doolittle_scale', 'region_transmembranaire', 
+                                                         score_more, seq_scores, params, seq_nb, legende)
+    if 'region_de_surface' in params_keys:
+        regions['region_de_surface'], legende = plot_region('Kyte_Doolittle_scale', 'region_de_surface', 
+                    score_less, seq_scores, params, seq_nb, legende)
+    if 'region_antigenique_Hoop' in params_keys:
+        regions['region_antigenique_Hoop'], legende = plot_region('Hopp_Woods_scale', 'region_antigenique_Hoop', 
+                    score_less, seq_scores, params, seq_nb, legende)
+    if 'region_antigenique_Kolaskar' in params_keys:
+        regions['region_antigenique_Kolaskar'], legende = plot_region('Kolaskar_Tongaonkar_scale', 'region_antigenique_Kolaskar', 
+                    score_more, seq_scores, params, seq_nb, legende)
+
+    #Ajout du nom des aa a l'axe x si la longeur de la sequence <= 60 aa
     if len(seq) <= 60:
         ticks = [f'{aa}\n{nb}' for aa, nb in zip(seq, seq_nb) ]
         plt.xticks(seq_nb, ticks)
+    
+    plt.plot(seq_nb, [0]*len(seq), color = colors['zero'], label = 'reference')
+    #legende.append('reference')
+
+    #legende
+    plt.legend(loc = "lower right")
 
     plt.savefig('plot.png')
+    
+    return regions
 
-def analyse(sequ_path, debut, fin, params, echelles): #+scale
-    seq = pdb2seq(sequ_path)
+
+"""Main"""
+
+def analyse(sequ_path, debut, fin, params, echelles): 
+    seq = pdb2seq(sequ_path) #Extraction de la sequence du fichier pdb
+
+    #Si zoom sur la sequence particulaire
     if debut != '' and fin != '':
         debut = int(debut)
         fin = int(fin)
         seq = seq[debut: fin]
-        make_plot(seq, debut, fin, params,echelles)
-        
+        regions = make_plot(seq, debut, fin, params,echelles)
+    #Si pas de zoom
     else:
-        make_plot(seq, 0, len(seq),params, echelles)
+        regions = make_plot(seq, 0, len(seq),params, echelles)
+    return regions
