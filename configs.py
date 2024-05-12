@@ -1,10 +1,10 @@
 """Valeurs de config"""
 
 #info sur des regions a detecter
-#detecter la region?, minsize, maxsize, taux de tolerance
-detections = {'region_transmembranaire': [False, 19, 22, 0],
+#detecter la region?, minsize, maxsize, taux de tolerance, seuil de detection
+detections = {'region_transmembranaire': [False, 19, 22, 0, 1.6],
               'region_de_surface': [False, 5, 8, 0],
-              'region_antigenique_Hoop': [False, 3, 10, 0],
+              'region_antigenique_Hoop': [False, 6, 9, 0, 1],
               'region_antigenique_Kolaskar': [False, 6, 20, 0]} 
 
 #couleurs sur le plot

@@ -29,8 +29,8 @@ def score_less(score):
         return True
     return False
 
-def transmembrane_region(score, param):
-    """Cherche des regions transmembranaires"""
+def calculate_regions_avg(score, param, seuil):
+    """Cherche des regions necessitant le calcule de la moyenne des scores"""
     region = []
 
     #param[1] = taille minimale de la region
@@ -39,7 +39,7 @@ def transmembrane_region(score, param):
 
     etat = 0 #flag
     debut = 0 #debut de la region
-    seuil = 1.6*(1-float(param[3].get()))
+    seuil = seuil*(1-float(param[3].get()))
     minsize = int(param[1].get())
 
     i = 0
@@ -69,7 +69,8 @@ def transmembrane_region(score, param):
 
 
 def calculate_regions(score, param, fun):
-    """Cherche des regions selectionnes"""
+    """Cherche des regions selectionnes ne necessitant pas 
+    le calcule du score moyen"""
     region = []
 
     #param[1] = taille minimale de la region
@@ -129,10 +130,12 @@ def calculate_regions(score, param, fun):
 def plot_region(scale_name, region_name, fun, seq_scores, params, seq_nb):
     """Dessiner les regions identifiee sur le graphe"""
     seq_score = seq_scores[scale_name]
-    if region_name == 'region_transmembranaire':
-        region = transmembrane_region(seq_score, params[region_name])
-    else:
-        region = calculate_regions(seq_score, params[region_name],fun)
+    try:
+        #regions necessitant le calcul de moyenne
+        region = calculate_regions_avg(seq_score, params[region_name], seuil = params[region_name][4])
+    except IndexError:
+        #regions ne necessitant pas le calcul de moyenne
+        region = calculate_regions(seq_score, params[region_name], fun)
     i = 0
     for r in region:
         if fun == score_more:
@@ -194,6 +197,17 @@ def make_plot(seq, debut, fin, params, echelles):
 
     #legende
     plt.legend(loc = "lower right")
+
+    max_vals = []
+    min_vals = []
+    for s in seq_scores.values():
+        min_vals.append(min(s))
+        max_vals.append(max(s))
+
+    plt.text(0.3, max(max_vals)+0.3, 'hydrophobe (des echelles en représentées en bleu)',
+        verticalalignment='top', horizontalalignment='left')
+    plt.text(0.3, min(min_vals)-0.3, 'hydrophile (des echelles en représentées en bleu)',
+        verticalalignment='bottom', horizontalalignment='left')
 
     plt.savefig('plot.png')
     
