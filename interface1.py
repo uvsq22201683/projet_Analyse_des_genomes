@@ -2,7 +2,9 @@ import tkinter as tk
 from calculate_regions import analyse
 from configs import detections
 from scales import scales
+from configs import colors
 from PIL import Image, ImageTk
+from calculate_regions import calculate_regions
 
 """Creation de Frames"""
 
@@ -178,11 +180,22 @@ def change_scale_visibility():
 """Main"""
 
 def get_res():
+<<<<<<< Updated upstream
     """Analyse de la sequence proteique"""
     regions = analyse(path.get(), debut.get(), fin.get(), param, echelles) #analyse
     place_plot(0.02, 0.27) #creation du plot
     regions_f = create_frame('Regions localisées', 0.02, 0.8, 0.6, 0.15) #affichage des regions
     set_region_f(regions_f, regions)
+=======
+    analyse(path.get(), debut.get(), fin.get(), param, echelles)
+    place_plot(0.02, 0.23)
+
+# def regions(regionss):
+#     regionss = calculate_regions
+#     for i in cal
+
+
+>>>>>>> Stashed changes
 
 
 def main():
@@ -226,7 +239,11 @@ def main():
                      justify='center', background = couleur, fg = text_couleur)
     titre.pack()
 
+<<<<<<< Updated upstream
     path_frame = create_frame('Fichier  à analyser', 0.02, 0.07, 0.45, py = 20)
+=======
+    path_frame = create_frame('Fichier à analyser', 0.02, 0.07)
+>>>>>>> Stashed changes
     set_path_f(path_frame)
 
     fenetre_frame = create_frame('Zoom', 0.5, 0.07, 0.15)
@@ -243,6 +260,11 @@ def main():
                            command= get_res)
     analyser_b.place(relx=0.35, rely=0.18)
 
+<<<<<<< Updated upstream
+=======
+    
+
+>>>>>>> Stashed changes
     root.mainloop()
 
 main()

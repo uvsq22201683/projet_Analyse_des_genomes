@@ -3,8 +3,11 @@ import matplotlib.pyplot as plt
 from pdb_to_seq import pdb2seq
 from configs import colors
 
+<<<<<<< Updated upstream
 """Analyse de la sequence"""
 
+=======
+>>>>>>> Stashed changes
 def calculate_score(seq, echelle):
     """Calcule le score suivant l'echelle selectionnee
     pour chaque AA de la sequence"""
@@ -152,6 +155,7 @@ def plot_region(scale_name, region_name, fun, seq_scores, params, seq_nb):
     return region
 
 
+
 def make_plot(seq, debut, fin, params, echelles):
     """Faire le graphe"""
     seq_scores = calculate_score(seq, echelles) #calculer les echelles selectionnees
@@ -159,6 +163,7 @@ def make_plot(seq, debut, fin, params, echelles):
 
     plt.figure().set_figwidth(10)
     plt.clf()
+<<<<<<< Updated upstream
 
     #Trace des scores de la sequence
     plt.title("Profile d'hydrophobicite")
@@ -166,10 +171,18 @@ def make_plot(seq, debut, fin, params, echelles):
         plt.plot(seq_nb, item, color = colors[key], label = key)
     
     #Identification des regions selectionnees
+=======
+    leg = []
+    plt.title("Profile d'hydrophobicite")
+    for key, item in seq_scores.items():
+        plt.plot(seq_nb, item, color = colors[key])
+
+>>>>>>> Stashed changes
     params_keys = []
     for k in list(params.keys()):
         if params[k][0].get():
             params_keys.append(k)
+<<<<<<< Updated upstream
     
 
     regions = {}
@@ -188,6 +201,31 @@ def make_plot(seq, debut, fin, params, echelles):
                     score_more, seq_scores, params, seq_nb)
 
     #Ajout du nom des aa a l'axe x si la longeur de la sequence <= 60 aa
+=======
+    if 'region_transmembranaire' in params_keys:
+        print('region_transmembranaire')
+        plot_region('Kyte_Doolittle_scale', 'region_transmembranaire', score_more, seq_scores, params, seq_nb)
+        leg.append("region transmembranaire")
+    if 'region_de_surface' in params_keys:
+        print('region_de_surface')
+        plot_region('Kyte_Doolittle_scale', 'region_de_surface', score_less, seq_scores, params, seq_nb)
+        leg.append("region de surface")
+    if 'region_antigenic_Hoop' in params_keys:
+        print('region_antigenic_Hoop')
+        plot_region('Hopp_Woods_scale', 'region_antigenic_Hoop', score_less, seq_scores, params, seq_nb)
+        leg.append("region antigénique Hoop")
+    if 'region_antigenic_Kolaskar' in params_keys:
+        print('region_antigenic_Kolaskar')
+        plot_region('Kolaskar_Tongaonkar_scale', 'region_antigenic_Kolaskar', score_more, seq_scores, params, seq_nb)
+        leg.append("region antigénique Kolaskar")
+        
+    plt.legend(leg, loc = "lower right")
+    
+    #plt.plot(regions[region][1][i], regions[region][2][i], color = colors[region])
+    
+    #plt.xlim(debut, fin)
+    
+>>>>>>> Stashed changes
     if len(seq) <= 60:
         ticks = [f'{aa}\n{nb}' for aa, nb in zip(seq, seq_nb) ]
         plt.xticks(seq_nb, ticks)
